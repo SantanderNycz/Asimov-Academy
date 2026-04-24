@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Positivus | Digital Marketing Agency</title>
+
+  <!-- CSS — um arquivo por seção -->
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/nav.css" />
+  <link rel="stylesheet" href="css/hero.css" />
+  <link rel="stylesheet" href="css/services.css" />
+  <link rel="stylesheet" href="css/cta.css" />
+  <link rel="stylesheet" href="css/cases.css" />
+
+  <!-- Seções futuras (comentadas até implementação)
+  <link rel="stylesheet" href="css/process.css" />
+  <link rel="stylesheet" href="css/team.css" />
+  <link rel="stylesheet" href="css/testimonials.css" />
+  <link rel="stylesheet" href="css/contact.css" />
+  <link rel="stylesheet" href="css/footer.css" />
+  -->
+</head>
+<body>
+
+  <div id="s-nav"></div>
+
+  <main>
+    <div id="s-hero"></div>
+    <div id="s-services"></div>
+    <div id="s-cta"></div>
+    <div id="s-cases"></div>
+
+    <!-- Seções futuras (comentadas até implementação)
+    <div id="s-process"></div>
+    <div id="s-team"></div>
+    <div id="s-testimonials"></div>
+    <div id="s-contact"></div>
+    -->
+  </main>
+
+  <!-- <div id="s-footer"></div> -->
+
+  <script>
+    [
+      ['s-nav',      'sections/nav.html'],
+      ['s-hero',     'sections/hero.html'],
+      ['s-services', 'sections/services.html'],
+      ['s-cta',      'sections/cta.html'],
+      ['s-cases',    'sections/cases.html'],
+
+      /* Seções futuras — descomente quando implementar:
+      ['s-process',      'sections/process.html'],
+      ['s-team',         'sections/team.html'],
+      ['s-testimonials', 'sections/testimonials.html'],
+      ['s-contact',      'sections/contact.html'],
+      ['s-footer',       'sections/footer.html'],
+      */
+    ].forEach(([id, file]) =>
+      fetch(file)
+        .then(r => r.text())
+        .then(html => { document.getElementById(id).innerHTML = html; })
+        .catch(() => {}) /* silencia 404 de arquivos ainda não criados */
+    );
+  </script>
+
+</body>
+</html>
