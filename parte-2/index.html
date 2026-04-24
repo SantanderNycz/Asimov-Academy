@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Python + IA — Aprenda do Zero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:          #080810;
+    --bg-card:     #0f0f1a;
+    --bg-border:   #1a1a2e;
+    --em:          #00e07a;
+    --em-dim:      #00b35f;
+    --indigo:      #6c63ff;
+    --indigo-dim:  #3d38a0;
+    --text-hi:     #eeeef8;
+    --text-mid:    #9898b8;
+    --text-lo:     #4a4a6a;
+    --mono:        'JetBrains Mono', monospace;
+    --display:     'Syne', sans-serif;
+    --body:        'DM Sans', sans-serif;
+    --grid:        8px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-hi);
+    font-family: var(--body);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 1;
+  }
+
+  /* ── AMBIENT GLOW ORBS ── */
+  .glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+  }
+  .glow-orb--em {
+    width: 520px; height: 520px;
+    background: radial-gradient(circle, rgba(0,224,122,0.13) 0%, transparent 70%);
+    top: -120px; left: -80px;
+    animation: orbPulse 9s ease-in-out infinite alternate;
+  }
+  .glow-orb--indigo {
+    width: 460px; height: 460px;
+    background: radial-gradient(circle, rgba(108,99,255,0.12) 0%, transparent 70%);
+    top: 60px; right: -100px;
+    animation: orbPulse 12s ease-in-out infinite alternate-reverse;
+  }
+  .glow-orb--em2 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(0,224,122,0.07) 0%, transparent 70%);
+    bottom: 40px; right: 200px;
+    animation: orbPulse 15s ease-in-out infinite alternate;
+  }
+
+  @keyframes orbPulse {
+    0%   { opacity: 0.6; transform: scale(1); }
+    100% { opacity: 1;   transform: scale(1.18); }
+  }
+
+  /* ── LAYOUT ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .hero__inner {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: calc(var(--grid)*10) calc(var(--grid)*3);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: calc(var(--grid)*7);
+    align-items: center;
+  }
+
+  /* ── BADGE ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--grid)*1);
+    background: rgba(0,224,122,0.07);
+    border: 1px solid rgba(0,224,122,0.22);
+    border-radius: 99px;
+    padding: calc(var(--grid)*0.75) calc(var(--grid)*1.75);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--em);
+    text-transform: uppercase;
+    margin-bottom: calc(var(--grid)*3);
+    animation: fadeUp 0.6s cubic-bezier(.2,.8,.4,1) both;
+    animation-delay: 0.05s;
+  }
+  .badge__dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--em);
+    box-shadow: 0 0 6px var(--em);
+    animation: dotBlink 2s ease-in-out infinite;
+  }
+  @keyframes dotBlink {
+    0%,100% { opacity: 1; } 50% { opacity: 0.3; }
+  }
+
+  /* ── HEADLINE ── */
+  .headline {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(2.1rem, 7vw, 4.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--text-hi);
+    animation: fadeUp 0.7s cubic-bezier(.2,.8,.4,1) both;
+    animation-delay: 0.15s;
+    max-width: 680px;
+  }
+
+  .headline__accent {
+    position: relative;
+    display: inline;
+    background: linear-gradient(95deg, #00e07a 0%, #4ade80 40%, #6c63ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .headline__accent::after {
+    content: '';
+    position: absolute;
+    bottom: -3px; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #00e07a, #6c63ff);
+    border-radius: 2px;
+    opacity: 0.5;
+  }
+
+  /* ── SUBHEADLINE ── */
+  .subheadline {
+    font-family: var(--body);
+    font-weight: 300;
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
+    line-height: 1.65;
+    color: var(--text-mid);
+    max-width: 520px;
+    margin-top: calc(var(--grid)*2.5);
+    animation: fadeUp 0.7s cubic-bezier(.2,.8,.4,1) both;
+    animation-delay: 0.3s;
+  }
+
+  /* ── BULLETS ── */
+  .bullets {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: calc(var(--grid)*1.5);
+    margin-top: calc(var(--grid)*4);
+    list-style: none;
+  }
+
+  .bullets__item {
+    display: flex;
+    align-items: flex-start;
+    gap: calc(var(--grid)*1.5);
+    font-size: 0.92rem;
+    color: var(--text-mid);
+    font-weight: 400;
+    animation: fadeUp 0.6s cubic-bezier(.2,.8,.4,1) both;
+  }
+  .bullets__item:nth-child(1) { animation-delay: 0.42s; }
+  .bullets__item:nth-child(2) { animation-delay: 0.50s; }
+  .bullets__item:nth-child(3) { animation-delay: 0.58s; }
+  .bullets__item:nth-child(4) { animation-delay: 0.66s; }
+
+  .bullets__marker {
+    flex-shrink: 0;
+    margin-top: 2px;
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    background: rgba(0,224,122,0.08);
+    border: 1px solid rgba(0,224,122,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    color: var(--em);
+  }
+
+  /* ── CTAs ── */
+  .ctas {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: calc(var(--grid)*2);
+    margin-top: calc(var(--grid)*5);
+    animation: fadeUp 0.7s cubic-bezier(.2,.8,.4,1) both;
+    animation-delay: 0.78s;
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--grid)*2);
+  }
+
+  .btn-primary {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--grid)*1);
+    padding: calc(var(--grid)*2) calc(var(--grid)*4);
+    background: var(--em);
+    color: #050a0a;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.22s cubic-bezier(.2,.8,.4,1), box-shadow 0.22s ease;
+    box-shadow: 0 0 0 0 rgba(0,224,122,0);
+    white-space: nowrap;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, rgba(0,224,122,0.4), rgba(108,99,255,0.3));
+    opacity: 0;
+    transition: opacity 0.22s ease;
+    z-index: -1;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 0 28px rgba(0,224,122,0.45), 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .btn-primary:hover::before { opacity: 1; }
+  .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+  .btn-arrow {
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+  .btn-primary:hover .btn-arrow { transform: translateX(3px); }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--body);
+    font-weight: 400;
+    font-size: 0.9rem;
+    color: var(--text-mid);
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    background: none;
+    position: relative;
+    padding-bottom: 2px;
+    letter-spacing: 0.01em;
+    transition: color 0.2s ease;
+  }
+  .btn-secondary::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 1px;
+    background: var(--em);
+    transition: width 0.3s cubic-bezier(.2,.8,.4,1);
+  }
+  .btn-secondary:hover { color: var(--em); }
+  .btn-secondary:hover::after { width: 100%; }
+
+  .social-proof {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--grid)*1.5);
+    font-size: 0.78rem;
+    color: var(--text-lo);
+    font-family: var(--mono);
+    letter-spacing: 0.04em;
+  }
+  .social-proof__stars {
+    color: #f5c518;
+    letter-spacing: 1px;
+    font-size: 0.85rem;
+  }
+
+  /* ── TERMINAL CARD ── */
+  .terminal-wrap {
+    display: none;
+    position: relative;
+    animation: fadeUp 0.9s cubic-bezier(.2,.8,.4,1) both;
+    animation-delay: 0.25s;
+  }
+
+  .terminal {
+    background: var(--bg-card);
+    border: 1px solid var(--bg-border);
+    border-radius: 16px;
+    overflow: hidden;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    box-shadow:
+      0 0 0 1px rgba(0,224,122,0.06),
+      0 24px 64px rgba(0,0,0,0.6),
+      0 0 80px rgba(0,224,122,0.06);
+    position: relative;
+  }
+
+  .terminal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, rgba(0,224,122,0.03) 0%, transparent 40%, rgba(108,99,255,0.04) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .terminal__bar {
+    padding: calc(var(--grid)*1.5) calc(var(--grid)*2);
+    border-bottom: 1px solid var(--bg-border);
+    display: flex;
+    align-items: center;
+    gap: calc(var(--grid)*1);
+    background: rgba(255,255,255,0.02);
+  }
+  .terminal__dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .terminal__dot--r { background: #ff5f5f; }
+  .terminal__dot--y { background: #ffbe2e; }
+  .terminal__dot--g { background: #26c940; }
+
+  .terminal__label {
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 0.68rem;
+    color: var(--text-lo);
+    letter-spacing: 0.05em;
+  }
+
+  .terminal__body {
+    padding: calc(var(--grid)*2.5) calc(var(--grid)*3);
+    line-height: 1.8;
+    position: relative;
+    z-index: 2;
+  }
+
+  .t-comment { color: #3d4870; }
+  .t-keyword { color: #c792ea; }
+  .t-fn      { color: #82aaff; }
+  .t-string  { color: #c3e88d; }
+  .t-em      { color: var(--em); }
+  .t-num     { color: #f78c6c; }
+  .t-white   { color: var(--text-hi); }
+  .t-indent  { display: block; padding-left: 1.4em; }
+  .t-indent2 { display: block; padding-left: 2.8em; }
+  .t-muted   { color: var(--text-mid); }
+
+  .cursor-blink {
+    display: inline-block;
+    width: 8px; height: 1em;
+    background: var(--em);
+    vertical-align: text-bottom;
+    animation: cursorBlink 1.1s step-end infinite;
+    margin-left: 2px;
+  }
+  @keyframes cursorBlink {
+    0%,100% { opacity: 1; } 50% { opacity: 0; }
+  }
+
+  /* line-by-line reveal */
+  .terminal__body .line {
+    display: block;
+    overflow: hidden;
+    opacity: 0;
+    animation: lineReveal 0.4s ease forwards;
+  }
+  .line:nth-child(1)  { animation-delay: 0.8s; }
+  .line:nth-child(2)  { animation-delay: 1.0s; }
+  .line:nth-child(3)  { animation-delay: 1.2s; }
+  .line:nth-child(4)  { animation-delay: 1.4s; }
+  .line:nth-child(5)  { animation-delay: 1.6s; }
+  .line:nth-child(6)  { animation-delay: 1.8s; }
+  .line:nth-child(7)  { animation-delay: 2.0s; }
+  .line:nth-child(8)  { animation-delay: 2.2s; }
+  .line:nth-child(9)  { animation-delay: 2.4s; }
+  .line:nth-child(10) { animation-delay: 2.6s; }
+  .line:nth-child(11) { animation-delay: 2.8s; }
+  .line:nth-child(12) { animation-delay: 3.0s; }
+  .line:nth-child(13) { animation-delay: 3.2s; }
+  .line:nth-child(14) { animation-delay: 3.4s; }
+
+  @keyframes lineReveal {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* output badge inside terminal */
+  .terminal__output {
+    margin-top: calc(var(--grid)*2);
+    padding: calc(var(--grid)*1.5) calc(var(--grid)*2);
+    background: rgba(0,224,122,0.06);
+    border: 1px solid rgba(0,224,122,0.15);
+    border-radius: 8px;
+    font-size: 0.72rem;
+    color: var(--em);
+    display: flex;
+    align-items: center;
+    gap: calc(var(--grid)*1);
+    opacity: 0;
+    animation: lineReveal 0.5s ease forwards;
+    animation-delay: 3.7s;
+  }
+  .terminal__output-icon {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: rgba(0,224,122,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    flex-shrink: 0;
+  }
+
+  /* floating label on terminal */
+  .terminal__floatlabel {
+    position: absolute;
+    top: -14px; right: 24px;
+    background: linear-gradient(90deg, var(--em), #4ade80);
+    color: #050a0a;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 3px 10px;
+    border-radius: 4px 4px 0 0;
+    text-transform: uppercase;
+  }
+
+  /* grid lines decorative */
+  .grid-deco {
+    position: absolute;
+    inset: -30px;
+    background-image:
+      linear-gradient(rgba(0,224,122,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,224,122,0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+    z-index: 0;
+  }
+
+  /* ── KEYFRAMES ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (min-width: 640px) {
+    .bullets {
+      grid-template-columns: 1fr 1fr;
+    }
+    .cta-row {
+      flex-direction: row;
+    }
+    .hero__inner {
+      padding: calc(var(--grid)*12) calc(var(--grid)*5);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero__inner {
+      grid-template-columns: 1fr 480px;
+      gap: calc(var(--grid)*8);
+      padding: calc(var(--grid)*10) calc(var(--grid)*8);
+    }
+    .terminal-wrap {
+      display: block;
+    }
+    .glow-orb--em {
+      width: 700px; height: 700px;
+      top: -200px; left: -180px;
+    }
+    .glow-orb--indigo {
+      width: 600px; height: 600px;
+      top: 50px; right: -150px;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .hero__inner {
+      padding: calc(var(--grid)*14) calc(var(--grid)*10);
+    }
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--bg-border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <!-- ambient glows -->
+  <div class="glow-orb glow-orb--em" aria-hidden="true"></div>
+  <div class="glow-orb glow-orb--indigo" aria-hidden="true"></div>
+  <div class="glow-orb glow-orb--em2" aria-hidden="true"></div>
+
+  <!-- decorative grid -->
+  <div class="grid-deco" aria-hidden="true"></div>
+
+  <div class="hero__inner">
+
+    <!-- ── LEFT COLUMN ── -->
+    <div class="hero__content">
+
+      <div class="badge" aria-label="Novo">
+        <span class="badge__dot" aria-hidden="true"></span>
+        Novo &mdash; Turma 2025 aberta
+      </div>
+
+      <h1 class="headline">
+        Aprenda <span class="headline__accent">Python</span> do zero e construa projetos reais com&nbsp;<span class="headline__accent">IA</span>
+      </h1>
+
+      <p class="subheadline">
+        O curso mais prático do Brasil para quem quer entrar em tecnologia sem enrolação
+      </p>
+
+      <ul class="bullets" role="list" aria-label="O que voce vai encontrar">
+        <li class="bullets__item">
+          <span class="bullets__marker" aria-hidden="true">+</span>
+          <span>+40 horas de conteúdo direto ao ponto</span>
+        </li>
+        <li class="bullets__item">
+          <span class="bullets__marker" aria-hidden="true">&rarr;</span>
+          <span>Projetos com Python + IA desde o módulo 1</span>
+        </li>
+        <li class="bullets__item">
+          <span class="bullets__marker" aria-hidden="true">&rarr;</span>
+          <span>Suporte da comunidade com +20.000 alunos</span>
+        </li>
+        <li class="bullets__item">
+          <span class="bullets__marker" aria-hidden="true">&rarr;</span>
+          <span>Certificado reconhecido pelo mercado</span>
+        </li>
+      </ul>
+
+      <div class="ctas">
+        <div class="cta-row">
+          <a href="#" class="btn-primary" aria-label="Quero começar agora">
+            Quero começar agora
+            <span class="btn-arrow" aria-hidden="true">&rarr;</span>
+          </a>
+          <a href="#" class="btn-secondary" aria-label="Ver o que vou aprender">
+            Ver o que vou aprender
+          </a>
+        </div>
+        <div class="social-proof" aria-label="Avaliação dos alunos">
+          <span class="social-proof__stars" aria-label="5 estrelas">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+          <span>4.9 de 5 &mdash; mais de 3.800 avaliações</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RIGHT COLUMN: TERMINAL ── -->
+    <div class="terminal-wrap" aria-hidden="true">
+      <div class="terminal__floatlabel">ao vivo</div>
+      <div class="terminal" role="img" aria-label="Exemplo de código Python com IA">
+        <div class="terminal__bar">
+          <span class="terminal__dot terminal__dot--r"></span>
+          <span class="terminal__dot terminal__dot--y"></span>
+          <span class="terminal__dot terminal__dot--g"></span>
+          <span class="terminal__label">projeto_ia.py</span>
+        </div>
+        <div class="terminal__body">
+          <span class="line"><span class="t-comment"># modulo 1 — seu primeiro agente de IA</span></span>
+          <span class="line">&nbsp;</span>
+          <span class="line"><span class="t-keyword">from</span> <span class="t-em">openai</span> <span class="t-keyword">import</span> <span class="t-fn">OpenAI</span></span>
+          <span class="line"><span class="t-keyword">import</span> <span class="t-em">json</span></span>
+          <span class="line">&nbsp;</span>
+          <span class="line"><span class="t-fn">client</span> <span class="t-white">= OpenAI()</span></span>
+          <span class="line">&nbsp;</span>
+          <span class="line"><span class="t-keyword">def</span> <span class="t-fn">analisar_dados</span><span class="t-white">(dataset):</span></span>
+          <span class="line t-indent"><span class="t-fn">response</span> <span class="t-white">= client.chat.completions.create(</span></span>
+          <span class="line t-indent2"><span class="t-white">model=</span><span class="t-string">"gpt-4o"</span><span class="t-white">,</span></span>
+          <span class="line t-indent2"><span class="t-white">messages=[{</span></span>
+          <span class="line t-indent2">&nbsp;&nbsp;<span class="t-string">"role"</span><span class="t-white">: </span><span class="t-string">"user"</span><span class="t-white">,</span></span>
+          <span class="line t-indent2">&nbsp;&nbsp;<span class="t-string">"content"</span><span class="t-white">: f</span><span class="t-string">"Analise: {dataset}"</span></span>
+          <span class="line t-indent"><span class="t-white">}])</span></span>
+          <div class="terminal__output">
+            <span class="terminal__output-icon">&#10003;</span>
+            <span>Rodando sem erros &mdash; modulo 1 completo</span>
+            <span class="cursor-blink"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</body>
+</html>
