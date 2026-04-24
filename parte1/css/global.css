@@ -1,0 +1,147 @@
+/* ════════════════════════════════════════════
+   GLOBAL — Reset, design tokens, utilidades
+════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* ── Cores ─────────────────────────────── */
+  --color-primary:   #B9FF66;
+  --color-dark:      #191A23;
+  --color-light:     #F3F3F3;
+  --color-white:     #FFFFFF;
+  --color-body-text: #000000;
+
+  /* ── Tipografia ─────────────────────────── */
+  --font: 'Space Grotesk', sans-serif;
+
+  /* ── Layout ─────────────────────────────── */
+  --container-max:  1440px;   /* igual ao frame do Figma */
+  --pad-x:          100px;    /* desktop → 100px cada lado = 1240px de conteúdo */
+  --section-gap:    140px;
+
+  /* ── Bordas / raios ──────────────────────── */
+  --border:          1px solid #191A23;
+  --radius-card:     45px;
+  --radius-pill:     7px;
+  --radius-btn:      14px;
+
+  /* ── Sombra dos cards ────────────────────── */
+  --shadow-card:     0px 5px 0px 0px #191A23;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--color-body-text);
+  background: var(--color-white);
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { display: block; max-width: 100%; }
+a   { text-decoration: none; color: inherit; }
+ul  { list-style: none; }
+
+/* ── Container ─────────────────────────── */
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--pad-x);
+}
+
+/* ── Botões ────────────────────────────── */
+.btn {
+  display: inline-block;
+  font-family: var(--font);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1;
+  padding: 20px 35px;
+  border-radius: var(--radius-btn);
+  border: var(--border);
+  cursor: pointer;
+  transition: background .2s, color .2s, transform .1s;
+}
+
+.btn:active { transform: translateY(2px); }
+
+.btn--dark {
+  background: var(--color-dark);
+  color: var(--color-white);
+}
+.btn--dark:hover {
+  background: transparent;
+  color: var(--color-dark);
+}
+
+.btn--outline {
+  background: transparent;
+  color: var(--color-dark);
+}
+.btn--outline:hover {
+  background: var(--color-dark);
+  color: var(--color-white);
+}
+
+.btn--green {
+  background: var(--color-primary);
+  color: var(--color-dark);
+  border-color: var(--color-primary);
+}
+.btn--green:hover { opacity: .85; }
+
+/* ── Cabeçalho de seção ──────────────────── */
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 80px;
+  flex-wrap: wrap;
+}
+
+.section-tag {
+  background: var(--color-primary);
+  color: var(--color-dark);
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1.2;
+  padding: 6px 14px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.section-desc {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.65;
+  max-width: 500px;
+  color: var(--color-body-text);
+}
+
+/* ── Espaçamento entre seções ─────────────── */
+.services   { padding-top: var(--section-gap); }
+.cta        { padding-top: var(--section-gap); padding-bottom: var(--section-gap); }
+.cases      { padding-bottom: var(--section-gap); }
+.process    { padding-top: var(--section-gap); }
+.team       { padding-top: var(--section-gap); }
+.testimonials { padding-top: var(--section-gap); }
+.contact    { padding-top: var(--section-gap); padding-bottom: var(--section-gap); }
+
+/* ── Responsivo ───────────────────────── */
+@media (max-width: 1100px) { :root { --pad-x: 60px; --section-gap: 100px; } }
+@media (max-width: 768px)  { :root { --pad-x: 24px; --section-gap: 80px;  } }
+@media (max-width: 480px)  { :root { --pad-x: 16px; --section-gap: 60px;  } }
+
+@media (max-width: 768px) {
+  .section-head { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 48px; }
+  .section-tag  { font-size: 28px; }
+}

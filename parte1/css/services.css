@@ -1,0 +1,121 @@
+/* ════════════════════════════════════════════
+   SERVICES
+════════════════════════════════════════════ */
+.services__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+/* ── Card base ─────────────────────────────
+   Largura: (1240px conteúdo - 40px gap) / 2 = 600px por card
+   Altura mínima: 310px (spec Figma)
+─────────────────────────────────────────── */
+.services__list-item {
+  flex: 0 1 calc(50% - 20px);
+  min-height: 310px;
+  border-radius: var(--radius-card);
+  border: var(--border);
+  box-shadow: var(--shadow-card);
+  padding: 50px;
+  /* Coluna: título no TOPO-ESQUERDO, link na BASE */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Variantes de cor ─────────────────────
+   grey  = #F3F3F3  (cards 1 e 4)
+   green = #B9FF66  (cards 2 e 5)
+   dark  = #191A23  (cards 3 e 6)
+─────────────────────────────────────────── */
+.services__list-item.grey  { background: var(--color-light); }
+.services__list-item.green { background: var(--color-primary); }
+.services__list-item.dark  { background: var(--color-dark); }
+
+/* ── Bloco de título (topo-esquerdo) ───── */
+.services__list-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  z-index: 1;
+}
+
+/* ── Pill do título ───────────────────────
+   Regra padrão por variante:
+     grey  → pill verde  (#B9FF66)  cards 1,4
+     green → pill BRANCO (#FFF)     cards 2,5  (PPC, Content Creation)
+     dark  → pill verde  (#B9FF66)  card 6     (Analytics)
+   Exceção via classe .white-pill:
+     dark.white-pill → pill BRANCO  card 3     (Social Media Marketing)
+─────────────────────────────────────────── */
+.services__list-title {
+  display: inline-block;
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.3;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+}
+
+.grey  .services__list-title { background: var(--color-primary); color: var(--color-dark); }
+.green .services__list-title { background: var(--color-white);   color: var(--color-dark); }
+.dark  .services__list-title { background: var(--color-primary); color: var(--color-dark); }
+
+/* Social Media Marketing: dark card com pill branco (exceção) */
+.dark.white-pill .services__list-title {
+  background: var(--color-white);
+  color: var(--color-dark);
+}
+
+/* ── Link "Learn more" (base-esquerda) ──── */
+.services__list-link {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 20px;
+  font-weight: 400;
+  transition: opacity .2s;
+  z-index: 1;
+}
+.services__list-link:hover { opacity: .65; }
+
+.grey  .services__list-link,
+.green .services__list-link { color: var(--color-dark); }
+.dark  .services__list-link { color: var(--color-white); }
+
+.services__list-link img {
+  width: 58px;
+  height: 58px;
+  flex-shrink: 0;
+}
+
+/* ── Ilustração (absoluta topo-direita) ── */
+.services__list-img {
+  position: absolute;
+  top: 44px;
+  right: 50px;
+  width: 200px;
+  height: auto;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Responsivo ───────────────────────── */
+@media (max-width: 900px) {
+  .services__list-item {
+    flex: 1 1 100%;
+    min-height: 260px;
+  }
+}
+
+@media (max-width: 600px) {
+  .services__list      { gap: 20px; }          /* grid gap menor no mobile */
+  .services__list-item { padding: 32px; min-height: 220px; }
+  .services__list-title { font-size: 26px; }   /* H3 mobile = 26px (spec Figma) */
+  .services__list-img   { width: 130px; top: 24px; right: 24px; opacity: .6; }
+}

@@ -1,0 +1,116 @@
+/* ════════════════════════════════════════════
+   HERO
+════════════════════════════════════════════ */
+.hero {
+  padding: 70px 0 0;
+}
+
+/* ── Layout ────────────────────────────── */
+.hero__inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--pad-x);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+  margin-bottom: 70px;
+}
+
+.hero__text {
+  flex: 0 1 48%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.hero__text h1 {
+  font-size: 60px;
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--color-body-text);
+  margin-bottom: 35px;
+  letter-spacing: -0.5px;
+}
+
+.hero__text p {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--color-body-text);
+  margin-bottom: 35px;
+  max-width: 480px;
+}
+
+.hero__visual {
+  flex: 0 1 50%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.hero__visual img {
+  width: 100%;
+  max-width: 600px;
+}
+
+/* ── Logos band ────────────────────────── */
+.logos {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 44px var(--pad-x);
+  border-top: 1px solid var(--color-dark);
+  border-bottom: 1px solid var(--color-dark);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.logos__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logos__item img {
+  height: 48px;
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
+  /* brightness(0) torna tudo preto — logos com fundo branco interno ficam */
+  /* como bloco sólido. Solução: grayscale + mix-blend-mode:multiply        */
+  /* Multiply faz branco virar transparente sobre fundo branco da página.   */
+  filter: grayscale(100%) brightness(0);
+  mix-blend-mode: multiply;
+}
+
+/* Notion SVG tem paths brancos embutidos (.st0 fill:#FFF).
+   brightness(0) transformaria esses paths em preto (logo todo preto).
+   Sem brightness(0) + multiply: branco → transparente, N escuro → visível. */
+#notion img {
+  filter: grayscale(100%);
+  mix-blend-mode: multiply;
+}
+
+/* ── Responsivo ───────────────────────── */
+@media (max-width: 1000px) {
+  .hero__text h1 { font-size: 48px; }
+}
+
+@media (max-width: 820px) {
+  .hero            { padding-top: 40px; }      /* reduz espaço topo no mobile */
+  .hero__inner     { flex-direction: column; margin-bottom: 48px; }
+  .hero__text      { flex: none; width: 100%; }
+  .hero__visual    { display: none; }
+  .hero__text h1   { font-size: 43px; }        /* H1 mobile = 43px (spec Figma) */
+  .logos           { justify-content: center; gap: 28px; }
+  .logos__item img { height: 36px; }
+}
+
+@media (max-width: 480px) {
+  /* H1 mantém 43px mesmo em telas muito pequenas — spec Figma */
+  .logos           { gap: 20px; }
+  .logos__item img { height: 26px; }
+}
