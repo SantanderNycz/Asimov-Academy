@@ -1,0 +1,3 @@
+- Utilizei o Claude Chat e o Claude Code.
+- Montei inicialmente uma estrutura de pastas e arquivos para adiantar o processo base e depois fui lapidando.
+- Fiz os ajustes finos, inserindo dados corretos e conferindo os detalhes e responsividade, espaçamentos e enquadrando de forma correspondente ao figma, tanto visualmente quanto referente às especificações técnicas.
